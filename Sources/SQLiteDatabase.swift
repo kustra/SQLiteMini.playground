@@ -70,6 +70,10 @@ public class SQLiteDatabase {
     public func execute(sql: String) throws {
         return try prepare(sql: sql).execute()
     }
+
+    public var lastInsertRowId: Int64 {
+        return sqlite3_last_insert_rowid(dbPtr)
+    }
 }
 
 public enum SQLiteError: Error {
@@ -126,36 +130,43 @@ extension SQLitePreparedStatement {
         try bind(idx, value, nonNilBinder)
     }
     
+    @discardableResult
     public func bind(_ idx: Int32, _ value: Int32?) throws -> SQLitePreparedStatement {
         try bind(idx, value, sqlite3_bind_int)
         return self
     }
     
+    @discardableResult
     public func bind(_ name: String, _ value: Int32?) throws -> SQLitePreparedStatement {
         try bind(name, value, sqlite3_bind_int)
         return self
     }
 
+    @discardableResult
     public func bind(_ idx: Int32, _ value: Int64?) throws -> SQLitePreparedStatement {
         try bind(idx, value, sqlite3_bind_int64)
         return self
     }
 
+    @discardableResult
     public func bind(_ name: String, _ value: Int64?) throws -> SQLitePreparedStatement {
         try bind(name, value, sqlite3_bind_int64)
         return self
     }
     
+    @discardableResult
     public func bind(_ idx: Int32, _ value: Double?) throws -> SQLitePreparedStatement {
         try bind(idx, value, sqlite3_bind_double)
         return self
     }
     
+    @discardableResult
     public func bind(_ name: String, _ value: Double?) throws -> SQLitePreparedStatement {
         try bind(name, value, sqlite3_bind_double)
         return self
     }
     
+    @discardableResult
     public func bind(_ idx: Int32, _ value: String?) throws -> SQLitePreparedStatement {
         try bind(idx, value) { stmtPtr, idx, value in
             let nsValue = value as NSString
@@ -164,6 +175,7 @@ extension SQLitePreparedStatement {
         return self
     }
     
+    @discardableResult
     public func bind(_ name: String, _ value: String?) throws -> SQLitePreparedStatement {
         try bind(name, value) { stmtPtr, idx, value in
             let nsValue = value as NSString
